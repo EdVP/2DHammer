@@ -5,22 +5,27 @@ using Photon.Pun;
 
 public class PlayerMover2D : MonoBehaviour {
 
+    [Header("Player Movement/Rotation Options")]
 
     public float speed;
 
     public float adjuster;
 
-    private Vector3 newPos;
+    public float roateSpeed = 0.25f;
 
-    private PhotonView photonView;
+    public float mouseDistanceFromPlayerToStopRotation = 10;
+
+    [Header("Camera Options")]
 
     public GameObject playerCamera;
 
     public Camera playerCam;
 
-    public float roateSpeed;
+    //Dynamically Set:
+    private Vector3 newPos;
 
-    public float mouseDistanceFromPlayerToStopRotation = 27;
+    private PhotonView photonView;
+
 
     private void Awake()
     {
@@ -32,13 +37,18 @@ public class PlayerMover2D : MonoBehaviour {
       
         if (photonView.IsMine)
         {
-            GameObject mainCamera = Camera.main.gameObject;
-            mainCamera.SetActive(false);
-            playerCamera.SetActive(true);
-            playerCamera.transform.parent = null;
+            CameraSetup();
         }
       
   
+    }
+
+    private void CameraSetup() //Turns off the main camera and sets-up the player camera:
+    {
+        GameObject mainCamera = Camera.main.gameObject;
+        mainCamera.SetActive(false);
+        playerCamera.SetActive(true);
+        playerCamera.transform.parent = null;
     }
 
     private void Update()
