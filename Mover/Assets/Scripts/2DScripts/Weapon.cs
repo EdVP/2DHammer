@@ -8,7 +8,6 @@ public class Weapon : MonoBehaviour {
     public GameObject barrel;
     public float speed;
     public GameObject bulletPrefab;
-
     private PhotonView photonView;
 
     private void Awake()
@@ -21,12 +20,12 @@ public class Weapon : MonoBehaviour {
     private void Update()
     {
         if (!photonView.IsMine) return;
-        
 
         if(Input.GetMouseButtonDown(0))
         {
-
+         
             photonView.RPC("Fire1", RpcTarget.AllViaServer, barrel.transform.position, barrel.transform.rotation);
+         
 
         }
     }

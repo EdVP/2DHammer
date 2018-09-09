@@ -24,11 +24,11 @@ public class BulletBehaviour : MonoBehaviour {
     {
         Owner = owner;
 
-        Vector3 velocity = originalDirection * weaponForce;
+        rb.velocity = originalDirection * weaponForce;
 
         lag = l;
 
-        rb.velocity += velocity * lag;
+        rb.position += rb.velocity * lag;
 
     }
    
