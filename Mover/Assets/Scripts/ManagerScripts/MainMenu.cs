@@ -10,6 +10,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
 {
     public Text connectionStatus;
 
+    public Text currentGameVersion;
+
+    public string gameVerison = "0001";
+
     [Header("Login UI")]
     public InputField playerNameInput;
 
@@ -25,8 +29,6 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public GameObject startGameButton;
 
-    public Dictionary<int, Photon.Realtime.Player> playersInRoom;
-
     public Text playerListTxt;
 
 
@@ -34,9 +36,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         
         playerNameInput.text = "player" + Random.Range(0, 1000);
-
+        PhotonNetwork.GameVersion = gameVerison;
         PhotonNetwork.AutomaticallySyncScene = true;
+        UpdateConnectionStatusText("Not Connected To Server");
+        currentGameVersion.text = "Game_Version:  " + PhotonNetwork.GameVersion;
+
     }
+
 
     //Connection Funcitons//////
     #region Connection_Funcitons
@@ -49,12 +55,18 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if (!playerName.Equals(""))
         {
             PhotonNetwork.LocalPlayer.NickName = playerName;
-            PhotonNetwork.ConnectUsingSettings();
+           PhotonNetwork.ConnectUsingSettings();
+
         }
         else
         {
             Debug.LogError("Player Name is invalid.");
         }
+    }
+
+    public void OnDisconnectButtonClicked()
+    {
+        PhotonNetwork.Disconnect();
     }
 
     public void OnRandomRoomButtonClicked() //Gets called when we click the join room button:
@@ -76,8 +88,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CurrentRoom.IsOpen = true;
         PhotonNetwork.CurrentRoom.IsVisible = true;
-
-
+       
         PhotonNetwork.LoadLevel("Level1");
     }
     #endregion
@@ -90,9 +101,18 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         loginPanel.SetActive(false); //Once connected to master server then we will set the ui to login to false;
 
-        connectionStatus.text = "ConnectedToMaster"; //Update the conneciton status;
+        UpdateConnectionStatusText("Connected To Server"); //Update the conneciton status;
 
         joinRoomPanel.SetActive(true); //Set the join room option pannel to true so we can now pick a room to join;
+
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        UpdateConnectionStatusText("Diconnected From The Server");
+        loginPanel.SetActive(true);
+        joinRoomPanel.SetActive(false);
+        inRoomPanel.SetActive(false);
     }
 
     public override void OnJoinRandomFailed(short returnCode, string message) //Will get called if we failed to connect ot a room because there was no rooms aviablie:
@@ -105,6 +125,7 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     }
 
+
     public override void OnJoinedRoom() //Called when we have joined a room sucessfuly
     {
         joinRoomPanel.SetActive(false);
@@ -114,25 +135,20 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if(!PhotonNetwork.IsMasterClient)
         {
             startGameButton.SetActive(false);
-            connectionStatus.text = "Joined Room: " + PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).NickName;
+            UpdateConnectionStatusText("Joined Room: " + PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).NickName);
         }
         else
         {
             startGameButton.SetActive(true);
-            connectionStatus.text = "Hosting Current Room";
+            UpdateConnectionStatusText("Hosting Current Room");
         }
         
-    }
-
-    private void OnPlayerConnected(NetworkPlayer player)
-    {
-       
     }
 
     public override void OnLeftRoom()
     {
         inRoomPanel.SetActive(false);
-        connectionStatus.text = "Left Room";
+        UpdateConnectionStatusText("Leaving Room");
 
     }
 
@@ -141,13 +157,13 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if(PhotonNetwork.IsMasterClient)
         {
             startGameButton.SetActive(true);
-            connectionStatus.text = "Hosting Current Room";
+            UpdateConnectionStatusText("Hosting Current Room");
         }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-      
+            
             UpdatePlayerList();
         
     }
@@ -162,22 +178,27 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     #endregion
 
+    #region Manegement Scripts
 
-    public void UpdatePlayerList()
+
+    public void UpdatePlayerList() //WIll update the list of players in the room:
     {
-       playersInRoom = PhotonNetwork.CurrentRoom.Players;
-
         playerListTxt.text = "Player: " + "\n";
 
-        foreach (KeyValuePair<int, Photon.Realtime.Player> kvp in playersInRoom)
+        foreach (KeyValuePair<int, Photon.Realtime.Player> kvp in PhotonNetwork.CurrentRoom.Players)
         {
             playerListTxt.text += "\n" + kvp.Value.NickName + "\n";
-
         }
-
-
-
     }
+
+
+    private void UpdateConnectionStatusText(string s) //Will update our connection text:
+    {
+        connectionStatus.text = "Connection Status: " + s;
+    }
+
+
+    #endregion
 
 
 }

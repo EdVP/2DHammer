@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class GameManger : MonoBehaviour {
+public class GameManger : MonoBehaviourPunCallbacks {
 
 
     public static GameManger instance = null;
@@ -25,4 +25,5 @@ public class GameManger : MonoBehaviour {
         spawnPlayerButton.SetActive(false);
         PhotonNetwork.Instantiate("Player", playerSpawn[Random.Range(0, playerSpawn.Length)].position, Quaternion.identity, 0);
     }
+
 }
