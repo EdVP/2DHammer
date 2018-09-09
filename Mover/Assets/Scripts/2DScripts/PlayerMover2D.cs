@@ -11,7 +11,7 @@ public class PlayerMover2D : MonoBehaviour {
 
     public float adjuster;
 
-    public float roateSpeed = 0.25f;
+    public float rotateSpeed = 0.25f;
 
     public float mouseDistanceFromPlayerToStopRotation = 10;
 
@@ -103,7 +103,7 @@ public class PlayerMover2D : MonoBehaviour {
         if (Vector3.Distance(transform.position, mousePos) > mouseDistanceFromPlayerToStopRotation)
         {
             float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(new Vector3(0, 0, angle)), speed);
+            transform.rotation = Quaternion.Lerp(this.transform.rotation, Quaternion.Euler(new Vector3(0, 0, angle)), rotateSpeed);
         }
 
 

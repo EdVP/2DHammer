@@ -12,7 +12,7 @@ public class GameManger : MonoBehaviour {
 
     public GameObject spawnPlayerButton;
 
-    public Transform playerSpawn;
+    public Transform[] playerSpawn;
 
     private void Awake()
     {
@@ -23,6 +23,6 @@ public class GameManger : MonoBehaviour {
     public void OnPlayerCreatedButtonClicked()
     {
         spawnPlayerButton.SetActive(false);
-        PhotonNetwork.Instantiate("Player", playerSpawn.position, Quaternion.identity, 0);
+        PhotonNetwork.Instantiate("Player", playerSpawn[Random.Range(0, playerSpawn.Length)].position, Quaternion.identity, 0);
     }
 }

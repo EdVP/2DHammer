@@ -273,10 +273,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   adjuster: 0.8
+  rotateSpeed: 0.2
+  mouseDistanceFromPlayerToStopRotation: 0
   playerCamera: {fileID: 1518371358201682}
   playerCam: {fileID: 20081027788517238}
-  roateSpeed: 0.25
-  mouseDistanceFromPlayerToStopRotation: 10
 --- !u!114 &114198467109600952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -303,8 +303,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   follower: {fileID: 1425041399945552}
-  cameraOffset: {x: 0, y: 0, z: -7}
   photonV: {fileID: 114487058295792178}
+  cameraOffset: {x: 0, y: 0, z: -7}
+  maxCameraHeight: -3
+  minCameraHeight: -10
+  scrollWeelAdjuster: 1
+  cameraLerp: 0.1
 --- !u!114 &114393886706382590
 MonoBehaviour:
   m_ObjectHideFlags: 1
