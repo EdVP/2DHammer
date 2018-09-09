@@ -25,6 +25,10 @@ public class MainMenu : MonoBehaviourPunCallbacks
 
     public GameObject startGameButton;
 
+    public Dictionary<int, Photon.Realtime.Player> playersInRoom;
+
+    public Text playerListTxt;
+
 
     private void Awake()
     {
@@ -105,16 +109,24 @@ public class MainMenu : MonoBehaviourPunCallbacks
     {
         joinRoomPanel.SetActive(false);
         inRoomPanel.SetActive(true);
-        connectionStatus.text = "Joined Room";
+        UpdatePlayerList();
+
         if(!PhotonNetwork.IsMasterClient)
         {
             startGameButton.SetActive(false);
+            connectionStatus.text = "Joined Room: " + PhotonNetwork.CurrentRoom.GetPlayer(PhotonNetwork.CurrentRoom.masterClientId).NickName;
         }
         else
         {
             startGameButton.SetActive(true);
+            connectionStatus.text = "Hosting Current Room";
         }
         
+    }
+
+    private void OnPlayerConnected(NetworkPlayer player)
+    {
+       
     }
 
     public override void OnLeftRoom()
@@ -129,11 +141,43 @@ public class MainMenu : MonoBehaviourPunCallbacks
         if(PhotonNetwork.IsMasterClient)
         {
             startGameButton.SetActive(true);
+            connectionStatus.text = "Hosting Current Room";
         }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+      
+            UpdatePlayerList();
+        
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+       
+            UpdatePlayerList();
+        
     }
 
 
     #endregion
+
+
+    public void UpdatePlayerList()
+    {
+       playersInRoom = PhotonNetwork.CurrentRoom.Players;
+
+        playerListTxt.text = "Player: " + "\n";
+
+        foreach (KeyValuePair<int, Photon.Realtime.Player> kvp in playersInRoom)
+        {
+            playerListTxt.text += "\n" + kvp.Value.NickName + "\n";
+
+        }
+
+
+
+    }
 
 
 }
