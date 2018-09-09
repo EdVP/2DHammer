@@ -26,4 +26,7 @@ public class GameManger : MonoBehaviourPunCallbacks {
         PhotonNetwork.Instantiate("Player", playerSpawn[Random.Range(0, playerSpawn.Length)].position, Quaternion.identity, 0);
     }
 
+
+
+
 }
